@@ -3,6 +3,7 @@
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TopicController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Models\User;
@@ -22,12 +23,30 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 
-Route::get('/admin/login', [AuthController::class, 'login_view'])->name('admin.login')->middleware(RedirectIfAuthenticated::class);
-Route::post('/admin/login', [AuthController::class, 'login_process'])->middleware(RedirectIfAuthenticated::class);
-Route::get('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout')->middleware(Authenticate::class);
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('login', [AuthController::class, 'login_view'])->name('login')->middleware(RedirectIfAuthenticated::class);
+    Route::post('login', [AuthController::class, 'login_process'])->middleware(RedirectIfAuthenticated::class);
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout')->middleware(Authenticate::class);
 
-Route::get('/admin/subjects', [SubjectController::class, 'index'])->name('admin.subjects')->middleware(Authenticate::class);
-Route::get('/admin/subject/create', [SubjectController::class, 'create'])->name('admin.subject.create')->middleware(Authenticate::class);
+    Route::controller(SubjectController::class)->middleware(Authenticate::class)->group(function () {
+        Route::get('subjects', 'index')->name('subjects');
+        Route::get('subject/create', 'create')->name('subject.create');
+        Route::post('subject/create', 'store');
+        Route::get('subject/{subject}/edit', 'edit')->name('subject.edit');
+        Route::post('subject/{subject}/edit', 'update');
+        Route::get('subject/{subject}/destroy', 'destroy')->name('subject.destroy');
+    });
+
+    Route::controller(TopicController::class)->middleware(Authenticate::class)->group(function () {
+        Route::get('topics', 'index')->name('topics');
+        Route::get('topic/create', 'create')->name('topic.create');
+        Route::post('topic/create', 'store');
+        Route::get('topic/{topic}/edit', 'edit')->name('topic.edit');
+        Route::post('topic/{topic}/edit', 'update');
+        Route::get('topic/{topic}/destroy', 'destroy')->name('topic.destroy');
+    });
+
+});
 
 Route::get('/create', function () {
     $data = [

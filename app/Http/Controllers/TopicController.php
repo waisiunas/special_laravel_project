@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Topic;
 use App\Models\Subject;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
-class SubjectController extends Controller
+class TopicController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('admin.subject.index', [
-            'subjects' => Subject::all(),
+        return view("admin.topic.index", [
+            'topics' => Topic::all(),
         ]);
     }
 
@@ -23,7 +24,9 @@ class SubjectController extends Controller
      */
     public function create()
     {
-        return view('admin.subject.create');
+        return view("admin.topic.create", [
+            'subjects' => Subject::all(),
+        ]);
     }
 
     /**
@@ -33,14 +36,16 @@ class SubjectController extends Controller
     {
         $request->validate([
             'name' => ['required'],
+            'subject_id' => ['required'],
         ]);
 
         $data = [
+            'subject_id' => $request->subject_id,
             'name' => $request->name,
             'slug' => Str::slug($request->name),
         ];
 
-        $is_created = Subject::create($data);
+        $is_created = Topic::create($data);
 
         if ($is_created) {
             return back()->with(['success' => "Magic has been spelled!"]);
@@ -52,28 +57,31 @@ class SubjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Subject $subject)
+    public function edit(Topic $topic)
     {
-        return view("admin.subject.edit", [
-            'subject' => $subject,
+        return view("admin.topic.edit", [
+            'subjects' => Subject::all(),
+            'topic' => $topic,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Subject $subject)
+    public function update(Request $request, Topic $topic)
     {
         $request->validate([
             'name' => ['required'],
+            'subject_id' => ['required'],
         ]);
 
         $data = [
+            'subject_id' => $request->subject_id,
             'name' => $request->name,
             'slug' => Str::slug($request->name),
         ];
 
-        $is_updated = $subject->update($data);
+        $is_updated = $topic->update($data);
 
         if ($is_updated) {
             return back()->with(['success' => "Magic has been spelled!"]);
@@ -85,9 +93,9 @@ class SubjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Subject $subject)
+    public function destroy(Topic $topic)
     {
-        $is_deleted = $subject->delete();
+        $is_deleted = $topic->delete();
 
         if ($is_deleted) {
             return back()->with(['success' => "Magic has been spelled!"]);

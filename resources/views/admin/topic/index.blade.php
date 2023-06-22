@@ -5,10 +5,10 @@
 
         <div class="row">
             <div class="col-6">
-                <h1 class="h3 mb-3">Subjects</h1>
+                <h1 class="h3 mb-3">Topics</h1>
             </div>
             <div class="col-6 text-end">
-                <a href="{{ route('admin.subject.create') }}" class="btn btn-outline-primary">Add Subject</a>
+                <a href="{{ route('admin.topic.create') }}" class="btn btn-outline-primary">Add Topic</a>
             </div>
         </div>
 
@@ -17,27 +17,29 @@
                 <div class="card">
                     <div class="card-body">
                         @include('partials.flash-messages')
-                        @if (count($subjects) > 0)
+                        @if (count($topics) > 0)
                             <table class="table table-bordered mb-0">
                                 <thead>
                                     <tr>
                                         <th>Sr. No.</th>
                                         <th>Name</th>
                                         <th>Slug</th>
+                                        <th>Subject</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    @foreach ($subjects as $subject)
+                                    @foreach ($topics as $topic)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $subject->name }}</td>
-                                            <td>{{ $subject->slug }}</td>
+                                            <td>{{ $topic->name }}</td>
+                                            <td>{{ $topic->slug }}</td>
+                                            <td>{{ $topic->subject_id }}</td>
                                             <td>
-                                                <a href="{{ route('admin.subject.edit', $subject) }}"
+                                                <a href="{{ route('admin.topic.edit', $topic) }}"
                                                     class="btn btn-primary">Edit</a>
-                                                <a href="{{ route('admin.subject.destroy', $subject) }}"
+                                                <a href="{{ route('admin.topic.destroy', $topic) }}"
                                                     class="btn btn-danger">Delete</a>
                                             </td>
                                         </tr>
