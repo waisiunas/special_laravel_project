@@ -24,6 +24,7 @@
                                         <th>Sr. No.</th>
                                         <th>Name</th>
                                         <th>Slug</th>
+                                        <th>Topics</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -34,6 +35,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $subject->name }}</td>
                                             <td>{{ $subject->slug }}</td>
+                                            <td>{{ count($subject->topics) }}</td>
                                             <td>
                                                 <a href="{{ route('admin.subject.edit', $subject) }}"
                                                     class="btn btn-primary">Edit</a>

@@ -5,17 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Topic extends Model
+class Question extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'subject_id',
-        'name',
-        'slug'
+        'topic_id',
+        'text'
     ];
-
-    public function subject () {
-        return $this->belongsTo(Subject::class);
-    }
 }

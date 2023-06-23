@@ -35,7 +35,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $topic->name }}</td>
                                             <td>{{ $topic->slug }}</td>
-                                            <td>{{ $topic->subject_id }}</td>
+                                            <td>{{ $topic->subject->name }}</td>
                                             <td>
                                                 <a href="{{ route('admin.topic.edit', $topic) }}"
                                                     class="btn btn-primary">Edit</a>

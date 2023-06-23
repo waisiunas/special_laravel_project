@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TopicController;
 use App\Http\Middleware\Authenticate;
@@ -44,6 +45,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('topic/{topic}/edit', 'edit')->name('topic.edit');
         Route::post('topic/{topic}/edit', 'update');
         Route::get('topic/{topic}/destroy', 'destroy')->name('topic.destroy');
+    });
+
+    Route::controller(QuestionController::class)->middleware(Authenticate::class)->group(function () {
+        Route::get('questions', 'index')->name('questions');
+        Route::get('question/create', 'create')->name('question.create');
+        Route::post('question/create', 'store');
+        Route::get('question/{question}/edit', 'edit')->name('question.edit');
+        Route::post('question/{question}/edit', 'update');
+        Route::get('question/{question}/destroy', 'destroy')->name('question.destroy');
     });
 
 });
