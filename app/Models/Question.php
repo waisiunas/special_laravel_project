@@ -13,4 +13,12 @@ class Question extends Model
         'topic_id',
         'text'
     ];
+
+    public function choices () {
+        return $this->hasMany(Choice::class);
+    }
+
+    public function topic () {
+        return $this->belongsTo(Topic::class);
+    }
 }

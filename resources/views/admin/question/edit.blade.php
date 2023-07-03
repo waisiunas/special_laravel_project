@@ -4,10 +4,10 @@
     <div class="container-fluid p-0">
         <div class="row">
             <div class="col-6">
-                <h1 class="h3 mb-3">Edit Topic</h1>
+                <h1 class="h3 mb-3">Edit Question</h1>
             </div>
             <div class="col-6 text-end">
-                <a href="{{ route('admin.topics') }}" class="btn btn-outline-primary">Back</a>
+                <a href="{{ route('admin.questions') }}" class="btn btn-outline-primary">Back</a>
             </div>
         </div>
 
@@ -16,7 +16,7 @@
                 <div class="card">
                     <div class="card-body">
                         @include('partials.flash-messages')
-                        <form action="{{ route('admin.topic.edit', $topic) }}" method="post">
+                        <form action="{{ route('admin.question.edit', $question) }}" method="post">
                             @csrf
                             <div class="mb-3">
                                 <label for="subject_id" class="form-label">Subject</label>
@@ -31,7 +31,7 @@
                                                 <option value="{{ $subject->id }}">{{ $subject->name }}</option>
                                             @endif
                                         @else
-                                            @if ($subject->id == $topic->subject_id)
+                                            @if ($subject->id == $question->topic->subject_id)
                                                 <option value="{{ $subject->id }}" selected>{{ $subject->name }}</option>
                                             @else
                                                 <option value="{{ $subject->id }}">{{ $subject->name }}</option>
@@ -43,15 +43,84 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
+
                             <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                    id="name" name="name" value="{{ old('name') ?? $topic->name }}"
-                                    placeholder="Enter topic name!">
-                                @error('name')
+                                <label for="topic_id" class="form-label">Topic</label>
+                                <select name="topic_id" id="topic_id"
+                                    class="form-select @error('topic_id') is-invalid @enderror">
+                                    <option value="" selected>Select a topic</option>
+                                    @foreach ($topics as $topic)
+                                        @if (old('topic_id'))
+                                            @if ($topic->id == old('topic_id'))
+                                                <option value="{{ $topic->id }}" selected>{{ $topic->name }}</option>
+                                            @else
+                                                <option value="{{ $topic->id }}">{{ $topic->name }}</option>
+                                            @endif
+                                        @else
+                                            @if ($topic->id == $question->topic_id)
+                                                <option value="{{ $topic->id }}" selected>{{ $topic->name }}</option>
+                                            @else
+                                                <option value="{{ $topic->id }}">{{ $topic->name }}</option>
+                                            @endif
+                                        @endif
+                                    @endforeach
+                                </select>
+                                @error('topic_id')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
+
+                            <div class="mb-3">
+                                <label for="text">Question Text</label>
+                                <textarea name="text" id="text" class="form-control @error('text') is-invalid @enderror" rows="2">{{ old('text') ?? $question->text }}</textarea>
+                                @error('text')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            @foreach ($question->choices as $choice)
+                                @if ($choice->is_correct == 1)
+                                    @php
+                                        $answer = $loop->iteration;
+                                    @endphp
+                                @endif
+                                <div class="mb-3">
+                                    <label for="choice_{{ $loop->iteration }}" class="form-label">Choice
+                                        {{ $loop->iteration }}</label>
+                                    <input type="text"
+                                        class="form-control @error('choice_' . $loop->iteration) is-invalid @enderror"
+                                        id="choice_{{ $loop->iteration }}" name="choice_{{ $loop->iteration }}"
+                                        value="{{ old('choice_' . $loop->iteration) ?? $choice->text }}"
+                                        placeholder="Enter choice {{ $loop->iteration }}!">
+                                    @error('choice_' . $loop->iteration)
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endforeach
+
+                            {{-- @for ($i = 1; $i < 5; $i++)
+                                <div class="mb-3">
+                                    <label for="choice_{{ $i }}" class="form-label">Choice
+                                        {{ $i }}</label>
+                                    <input type="text" class="form-control @error('choice_' . $i) is-invalid @enderror"
+                                        id="choice_{{ $i }}" name="choice_{{ $i }}"
+                                        value="{{ old('choice_' . $i) }}" placeholder="Enter choice {{ $i }}!">
+                                    @error('choice_' . $i)
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endfor --}}
+
+                            <div class="mb-3">
+                                <label for="correct_choice" class="form-label">Correct Choice</label>
+                                <input type="text" class="form-control @error('correct_choice') is-invalid @enderror"
+                                    id="correct_choice" name="correct_choice"
+                                    value="{{ old('correct_choice') ?? $answer }}" placeholder="Enter correct choice!">
+                                @error('correct_choice')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div>
                                 <input type="submit" value="Submit" class="btn btn-primary" name="submit">
                             </div>

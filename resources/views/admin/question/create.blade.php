@@ -63,10 +63,11 @@
 
                             @for ($i = 1; $i < 5; $i++)
                                 <div class="mb-3">
-                                    <label for="choice_{{ $i }}" class="form-label">Choice {{ $i }}</label>
+                                    <label for="choice_{{ $i }}" class="form-label">Choice
+                                        {{ $i }}</label>
                                     <input type="text" class="form-control @error('choice_' . $i) is-invalid @enderror"
-                                        id="choice_{{ $i }}" name="choice_{{ $i }}" value="{{ old('choice_' . $i) }}"
-                                        placeholder="Enter choice {{ $i }}!">
+                                        id="choice_{{ $i }}" name="choice_{{ $i }}"
+                                        value="{{ old('choice_' . $i) }}" placeholder="Enter choice {{ $i }}!">
                                     @error('choice_' . $i)
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror

@@ -58,7 +58,7 @@ class QuestionController extends Controller
             $question_id = $is_created->id;
 
             for ($i = 1; $i < 5; $i++) {
-                if($request->correct_choice == $i) {
+                if ($request->correct_choice == $i) {
                     $is_correct = 1;
                 } else {
                     $is_correct = 0;
@@ -74,18 +74,9 @@ class QuestionController extends Controller
             }
 
             return back()->with(['success' => "Magic has been spelled!"]);
-
         } else {
             return back()->with(['failure' => "Magic has failed to spell!"]);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Question $question)
-    {
-        //
     }
 
     /**
@@ -93,7 +84,11 @@ class QuestionController extends Controller
      */
     public function edit(Question $question)
     {
-        //
+        return view('admin.question.edit', [
+            'subjects' => Subject::all(),
+            'topics' => Topic::all(),
+            'question' => $question,
+        ]);
     }
 
     /**
@@ -101,7 +96,62 @@ class QuestionController extends Controller
      */
     public function update(Request $request, Question $question)
     {
-        //
+        $request->validate([
+            'subject_id' => ['required'],
+            'topic_id' => ['required'],
+            'text' => ['required'],
+            'choice_1' => ['required'],
+            'choice_2' => ['required'],
+            'choice_3' => ['required'],
+            'choice_4' => ['required'],
+            'correct_choice' => ['required'],
+        ]);
+
+        $data = [
+            'topic_id' => $request->topic_id,
+            'text' => $request->text,
+        ];
+
+        $is_updated = $question->update($data);
+
+        if ($is_updated) {
+
+            $i = 1;
+            foreach ($question->choices as $choice) {
+
+                if ($request->correct_choice == $i) {
+                    $is_correct = 1;
+                } else {
+                    $is_correct = 0;
+                }
+
+                $data = [
+                    'text' => request('choice_' . $i),
+                    'is_correct' => $is_correct,
+                ];
+                $choice->update($data);
+                $i++;
+            }
+
+            // for ($i = 1; $i < 5; $i++) {
+            //     if($request->correct_choice == $i) {
+            //         $is_correct = 1;
+            //     } else {
+            //         $is_correct = 0;
+            //     }
+
+            //     $data = [
+            //         'text' => request('choice_' . $i),
+            //         'is_correct' => $is_correct,
+            //     ];
+
+            //     Choice::create($data);
+            // }
+
+            return back()->with(['success' => "Magic has been spelled!"]);
+        } else {
+            return back()->with(['failure' => "Magic has failed to spell!"]);
+        }
     }
 
     /**
@@ -109,6 +159,12 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
-        //
+        $is_deleted = $question->delete();
+
+        if ($is_deleted) {
+            return back()->with(['success' => "Magic has been spelled!"]);
+        } else {
+            return back()->with(['failure' => "Magic has failed to spell!"]);
+        }
     }
 }
