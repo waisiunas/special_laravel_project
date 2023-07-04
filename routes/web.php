@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\auth\AuthController;
+use App\Http\Controllers\DynamicController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
@@ -54,6 +55,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('question/{question}/edit', 'edit')->name('question.edit');
         Route::post('question/{question}/edit', 'update');
         Route::get('question/{question}/destroy', 'destroy')->name('question.destroy');
+    });
+
+    Route::controller(DynamicController::class)->middleware(Authenticate::class)->group(function () {
+        Route::post("subject/topics", 'fetch_topics')->name('subject.topics');
     });
 
 });

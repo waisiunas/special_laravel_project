@@ -49,21 +49,29 @@
                                 <select name="topic_id" id="topic_id"
                                     class="form-select @error('topic_id') is-invalid @enderror">
                                     <option value="" selected>Select a topic</option>
-                                    @foreach ($topics as $topic)
-                                        @if (old('topic_id'))
-                                            @if ($topic->id == old('topic_id'))
-                                                <option value="{{ $topic->id }}" selected>{{ $topic->name }}</option>
-                                            @else
-                                                <option value="{{ $topic->id }}">{{ $topic->name }}</option>
+                                    @if (old('topic_id') || old('subject_id'))
+                                        @foreach ($topics as $topic)
+                                            @if ($topic->subject_id == old('subject_id'))
+                                                @if ($topic->id == old('topic_id'))
+                                                    <option value="{{ $topic->id }}" selected>{{ $topic->name }}
+                                                    </option>
+                                                @else
+                                                    <option value="{{ $topic->id }}">{{ $topic->name }}</option>
+                                                @endif
                                             @endif
-                                        @else
-                                            @if ($topic->id == $question->topic_id)
-                                                <option value="{{ $topic->id }}" selected>{{ $topic->name }}</option>
-                                            @else
-                                                <option value="{{ $topic->id }}">{{ $topic->name }}</option>
+                                        @endforeach
+                                    @else
+                                        @foreach ($topics as $topic)
+                                            @if ($topic->subject_id == $question->topic->subject_id)
+                                                @if ($topic->id == $question->topic_id)
+                                                    <option value="{{ $topic->id }}" selected>{{ $topic->name }}
+                                                    </option>
+                                                @else
+                                                    <option value="{{ $topic->id }}">{{ $topic->name }}</option>
+                                                @endif
                                             @endif
-                                        @endif
-                                    @endforeach
+                                        @endforeach
+                                    @endif
                                 </select>
                                 @error('topic_id')
                                     <div class="text-danger">{{ $message }}</div>
@@ -130,4 +138,38 @@
             </div>
         </div>
     </div>
+    <script>
+        const subjectIdElement = document.getElementById("subject_id");
+        const topicIdElement = document.getElementById("topic_id");
+
+        subjectIdElement.addEventListener("change", function() {
+            const subjectIdValue = subjectIdElement.value;
+
+            if (subjectIdValue != "") {
+
+                const token = document.querySelector("input[name='_token']").value;
+
+                const data = {
+                    subject_id: subjectIdValue,
+                    _token: token,
+                };
+
+                fetch("{{ route('admin.subject.topics') }}", {
+                        method: "POST",
+                        body: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(result) {
+                        topicIdElement.innerHTML = result;
+                    })
+
+            }
+
+        });
+    </script>
 @endsection
