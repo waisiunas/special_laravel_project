@@ -15,7 +15,13 @@ class Topic extends Model
         'slug'
     ];
 
-    public function subject () {
+    public function subject()
+    {
         return $this->belongsTo(Subject::class);
+    }
+
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
     }
 }
